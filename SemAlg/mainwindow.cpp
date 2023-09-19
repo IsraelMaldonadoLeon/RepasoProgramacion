@@ -249,3 +249,72 @@ void MainWindow::on_Tabla_clicked()
     QTableWidgetItem *Myitem=new QTableWidgetItem("1");
     ui->tableWidget->setItem(0,0,Myitem);
 }
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    QString filename = QFileDialog::getOpenFileName(this, tr("Abrir archivo"), "/home", tr("Archivos de texto (*.txt)"));
+
+    if (!filename.isEmpty())
+    {
+        QFile file(filename);
+        if (file.open(QFile::ReadOnly | QFile::Text))
+        {
+            QTextStream in(&file);
+
+            while (!in.atEnd())
+            {
+                QString line = in.readLine();
+                QStringList parts = line.split('|');
+                if (parts.size() == 7)
+                {
+                    int id = parts[0].toInt();
+                    float voltaje = parts[1].toFloat();
+                    int posicion_x = parts[2].toInt();
+                    int posicion_y = parts[3].toInt();
+                    int red = parts[4].toInt();
+                    int green = parts[5].toInt();
+                    int blue = parts[6].toInt();
+                    lis->agregar_final(id, voltaje, posicion_x, posicion_y, red, green, blue);
+                }
+            }
+
+            file.close();
+            QMessageBox::information(this, "Éxito", "Lista de neuronas cargada desde el archivo.");
+        }
+        else
+        {
+            QMessageBox::warning(this, "Error", "No se pudo abrir el archivo para lectura.");
+        }
+    }
+}
+
+
+void MainWindow::on_pushButton_clicked()
+{
+    //Guardar
+    QString filename = QFileDialog::getSaveFileName(this, tr("Guardar archivo"), "/home", tr("Archivos de texto (*.txt)"));
+
+    if (!filename.isEmpty())
+    {
+        QFile file(filename);
+        if (file.open(QFile::WriteOnly | QFile::Text))
+        {
+            QTextStream out(&file);
+            Neurona *aux = lis->h;
+            while (aux)
+            {
+                out << aux->id << '|' << aux->voltaje << '|'
+                    << aux->posicion_x << '|' << aux->posicion_y << '|'
+                    << aux->red << '|' << aux->green << '|' << aux->blue << '\n';
+                aux = aux->sig;
+            }
+            file.close();
+            QMessageBox::information(this, "Éxito", "Lista de neuronas guardada en el archivo.");
+        }
+        else
+        {
+            QMessageBox::warning(this, "Error", "No se pudo abrir el archivo para escritura.");
+        }
+    }
+}
+

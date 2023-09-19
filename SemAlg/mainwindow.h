@@ -8,6 +8,8 @@
 #include <QSpinBox>
 #include <QPlainTextEdit>
 #include <QTableWidget>
+#include <QFileDialog>
+#include <QMessageBox>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -49,6 +51,10 @@ private slots:
     void on_spinBox_valueChanged(int arg1);
 
     void on_buscarNeurona_clicked();
+
+    void on_pushButton_2_clicked();
+
+    void on_pushButton_clicked();
 
 private:
     Ui::MainWindow *ui;
